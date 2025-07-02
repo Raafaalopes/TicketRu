@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label } from "@/app/_components/ui/label";
+import { Input } from "@/app/_components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/_components/ui/button";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
