@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -12,6 +13,34 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [categoria, setCategoria] = useState("");
   const [manterConectado, setManterConectado] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha, manterConectado, categoria }),
+        credentials: "include", // para enviar cookies
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Erro ao fazer login");
+
+      alert("Login realizado com sucesso!");
+      console.log("redirecionando para o home");
+      router.push("/home"); // ou dashboard
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("Ocorreu um erro desconhecido.");
+      }
+    }
+  };
   return (
     <div
       className="flex items-center justify-center min-h-screen bg-cover bg-center relative"
@@ -25,7 +54,7 @@ export default function Login() {
           <h1 className=" text-3xl font-bold text-green-700">Login</h1>
           <p className="mb-6 text-sm text-green-700">Seja bem vindo</p>
         </div>
-        <form className="space-y-4 text-green-700">
+        <form className="space-y-4 text-green-700" onSubmit={handleSubmit}>
           <Label htmlFor="userType">Tipo de usuário</Label>
           <select
             name="userType"

@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [nome, setNome] = useState("");
@@ -14,6 +15,37 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [categoria, setCategoria] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (senha !== confirmarSenha) {
+      alert("As senhas não coincidem");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/cadastro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, email, senha, categoria }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Erro ao cadastrar");
+
+      alert("Cadastro realizado com sucesso!");
+      router.push("/login");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("Ocorreu um erro desconhecido.");
+      }
+    }
+  };
 
   return (
     <div
@@ -28,7 +60,7 @@ export default function Login() {
           <h1 className=" text-3xl font-bold text-green-700">Cadastro</h1>
           <p className="mb-6 text-sm text-green-700">Crie sua conta</p>
         </div>
-        <form className="space-y-4 text-green-700">
+        <form className="space-y-4 text-green-700" onSubmit={handleSubmit}>
           <Label htmlFor="userType">Tipo de usuário</Label>
           <select
             name="userType"
