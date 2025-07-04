@@ -1,0 +1,34 @@
+.loading-container {
+  @apply flex items-center justify-center min-h-screen bg-white;
+}
+
+.circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background-color: white;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.wave {
+  position: absolute;
+  left: 50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(34, 197, 94, 0.8); /* verde */
+  border-radius: 35%;
+  transform: translateX(-50%);
+  animation: waveUp 6s ease-in-out forwards;
+}
+
+@keyframes waveUp {
+  0% {
+    transform: translateX(-50%) translateY(100%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0%) rotate(360deg);
+  }
+}
