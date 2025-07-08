@@ -59,6 +59,8 @@ export async function POST(req: Request) {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
+    // caso queira que o token seja destruido quando nao clicar em manter conectado
+    //  é so tirar o que vem depois de :
     maxAge: manterConectado ? 60 * 60 * 24 * 7 : 60 * 60 * 2, // 7 dias ou 2 horas
   });
 
