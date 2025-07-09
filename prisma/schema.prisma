@@ -20,5 +20,15 @@ model Usuario {
   email     String   @unique
   senha     String
   categoria String
+  tickets   Ticket[]
   createdAt DateTime @default(now())
+}
+
+model Ticket {
+  id         String   @id @default(uuid())
+  tipo       String // "cafe" ou "almoço"
+  quantidade Int
+  dataCompra DateTime @default(now())
+  userId     String
+  user       Usuario  @relation(fields: [userId], references: [id])
 }
