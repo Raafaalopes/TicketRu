@@ -4,6 +4,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface Usuario {
+  id: string;
   nome: string;
   email: string;
   categoria: string;

@@ -1,26 +1,67 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../_components/Sidebar";
 import { QRCodeSVG } from "qrcode.react";
+
+interface Ticket {
+  tipo: "cafe" | "almoco";
+  quantidade: number;
+}
 
 export default function TicketsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<"cafe" | "almoco">();
-
-  // Simulação de dados
-  const nome = "Rafael Lopes";
+  const [nomeUsuario, setNomeUsuario] = useState("Usuário");
+  const [tickets, setTickets] = useState({ cafe: 0, almoco: 0 });
   const data = new Date().toLocaleString("pt-BR");
-  const [tickets, setTickets] = useState({
-    cafe: 3,
-    almoco: 5,
-  });
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const res = await fetch("/api/tickets/me");
+        const data = await res.json();
+
+        if (res.ok) {
+          const cafeQtd = (data.tickets as Ticket[])
+            .filter((t) => t.tipo === "cafe")
+            .reduce((acc, t) => acc + t.quantidade, 0);
+
+          const almocoQtd = (data.tickets as Ticket[])
+            .filter((t) => t.tipo === "almoco")
+            .reduce((acc, t) => acc + t.quantidade, 0);
+
+          setTickets({ cafe: cafeQtd, almoco: almocoQtd });
+        } else {
+          console.error(data.error);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar tickets:", err);
+      }
+    };
+
+    const fetchUsuario = async () => {
+      try {
+        const res = await fetch("/api/me");
+        const data = await res.json();
+
+        if (res.ok) {
+          setNomeUsuario(data.nome);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar usuário:", err);
+      }
+    };
+
+    fetchTickets();
+    fetchUsuario();
+  }, []);
 
   const handleGerarTicket = (tipo: "cafe" | "almoco") => {
     setSelectedTicket(tipo);
     setModalOpen(true);
 
-    // Atualiza os tickets (descontando 1)
+    // Apenas visual (não altera o backend)
     setTickets((prev) => ({
       ...prev,
       [tipo]: Math.max(prev[tipo] - 1, 0),
@@ -33,7 +74,7 @@ export default function TicketsPage() {
   };
 
   const ticketInfo = selectedTicket
-    ? `Ticket: ${selectedTicket.toUpperCase()}\nNome: ${nome}\nData: ${data}`
+    ? `Ticket: ${selectedTicket.toUpperCase()}\nNome: ${nomeUsuario}\nData: ${data}`
     : "";
 
   return (

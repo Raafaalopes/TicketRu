@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
       new TextEncoder().encode(SECRET)
     );
     return NextResponse.json({
+      id: payload.id,
       nome: payload.nome,
       email: payload.email,
       categoria: payload.categoria,
