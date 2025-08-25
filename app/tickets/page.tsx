@@ -5,40 +5,36 @@ import Sidebar from "../_components/Sidebar";
 import { QRCodeSVG } from "qrcode.react";
 
 interface Ticket {
+  id: string;
   tipo: "cafe" | "almoco";
   quantidade: number;
 }
 
 export default function TicketsPage() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState<"cafe" | "almoco">();
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [nomeUsuario, setNomeUsuario] = useState("Usuário");
-  const [tickets, setTickets] = useState({ cafe: 0, almoco: 0 });
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const data = new Date().toLocaleString("pt-BR");
 
-  useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        const res = await fetch("/api/tickets/me");
-        const data = await res.json();
+  // Buscar tickets do usuário
+  const fetchTickets = async () => {
+    try {
+      const res = await fetch("/api/tickets/me");
+      const data = await res.json();
 
-        if (res.ok) {
-          const cafeQtd = (data.tickets as Ticket[])
-            .filter((t) => t.tipo === "cafe")
-            .reduce((acc, t) => acc + t.quantidade, 0);
-
-          const almocoQtd = (data.tickets as Ticket[])
-            .filter((t) => t.tipo === "almoco")
-            .reduce((acc, t) => acc + t.quantidade, 0);
-
-          setTickets({ cafe: cafeQtd, almoco: almocoQtd });
-        } else {
-          console.error(data.error);
-        }
-      } catch (err) {
-        console.error("Erro ao buscar tickets:", err);
+      if (res.ok) {
+        setTickets(data.tickets);
+      } else {
+        console.error(data.error);
       }
-    };
+    } catch (err) {
+      console.error("Erro ao buscar tickets:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTickets();
 
     const fetchUsuario = async () => {
       try {
@@ -53,28 +49,41 @@ export default function TicketsPage() {
       }
     };
 
-    fetchTickets();
     fetchUsuario();
   }, []);
 
-  const handleGerarTicket = (tipo: "cafe" | "almoco") => {
-    setSelectedTicket(tipo);
+  const handleGerarTicket = (ticket: Ticket) => {
+    setSelectedTicket(ticket);
     setModalOpen(true);
-
-    // Apenas visual (não altera o backend)
-    setTickets((prev) => ({
-      ...prev,
-      [tipo]: Math.max(prev[tipo] - 1, 0),
-    }));
   };
 
   const closeModal = () => {
     setModalOpen(false);
-    setSelectedTicket(undefined);
+    setSelectedTicket(null);
+  };
+
+  const validarTicket = async () => {
+    if (!selectedTicket) return;
+
+    try {
+      const res = await fetch(`/api/tickets/me?id=${selectedTicket.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setTickets((prev) => prev.filter((t) => t.id !== selectedTicket.id));
+        closeModal();
+      } else {
+        const err = await res.json();
+        console.error(err.error);
+      }
+    } catch (err) {
+      console.error("Erro ao validar ticket:", err);
+    }
   };
 
   const ticketInfo = selectedTicket
-    ? `Ticket: ${selectedTicket.toUpperCase()}\nNome: ${nomeUsuario}\nData: ${data}`
+    ? `Ticket: ${selectedTicket.tipo.toUpperCase()}\nNome: ${nomeUsuario}\nData: ${data}`
     : "";
 
   return (
@@ -88,13 +97,17 @@ export default function TicketsPage() {
           </h2>
           <p className="text-gray-800 text-sm mb-2">
             Tickets disponíveis:{" "}
-            <span className="font-semibold">{tickets.cafe}</span>
+            <span className="font-semibold">
+              {tickets.filter((t) => t.tipo === "cafe").length}
+            </span>
           </p>
           <button
-            onClick={() => handleGerarTicket("cafe")}
-            disabled={tickets.cafe === 0}
+            onClick={() =>
+              handleGerarTicket(tickets.find((t) => t.tipo === "cafe")!)
+            }
+            disabled={!tickets.some((t) => t.tipo === "cafe")}
             className={`px-4 py-2 rounded text-white text-sm font-medium ${
-              tickets.cafe === 0
+              !tickets.some((t) => t.tipo === "cafe")
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-yellow-600 hover:bg-yellow-700"
             }`}
@@ -110,13 +123,17 @@ export default function TicketsPage() {
           </h2>
           <p className="text-gray-800 text-sm mb-2">
             Tickets disponíveis:{" "}
-            <span className="font-semibold">{tickets.almoco}</span>
+            <span className="font-semibold">
+              {tickets.filter((t) => t.tipo === "almoco").length}
+            </span>
           </p>
           <button
-            onClick={() => handleGerarTicket("almoco")}
-            disabled={tickets.almoco === 0}
+            onClick={() =>
+              handleGerarTicket(tickets.find((t) => t.tipo === "almoco")!)
+            }
+            disabled={!tickets.some((t) => t.tipo === "almoco")}
             className={`px-4 py-2 rounded text-white text-sm font-medium ${
-              tickets.almoco === 0
+              !tickets.some((t) => t.tipo === "almoco")
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-green-600 hover:bg-green-700"
             }`}
@@ -144,12 +161,20 @@ export default function TicketsPage() {
               <p className="text-xs text-gray-500 mt-4 whitespace-pre-line">
                 {ticketInfo}
               </p>
-              <button
-                onClick={closeModal}
-                className="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-              >
-                Fechar
-              </button>
+              <div className="flex justify-center gap-48 mt-4">
+                <button
+                  onClick={validarTicket}
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+                >
+                  Validado
+                </button>
+                <button
+                  onClick={closeModal}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                >
+                  Fechar
+                </button>
+              </div>
             </div>
           </div>
         )}

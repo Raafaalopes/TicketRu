@@ -22,19 +22,22 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { tickets } = body;
+    // tickets: [{ tipo: "cafe", quantidade: 3 }, ...]
 
-    // tickets: array de objetos { tipo: "cafe" | "almoco", quantidade: number }
-    const ticketsCriados = await Promise.all(
-      tickets.map((ticket: { tipo: string; quantidade: number }) =>
-        prisma.ticket.create({
+    const ticketsCriados: unknown[] = [];
+
+    for (const ticket of tickets) {
+      for (let i = 0; i < ticket.quantidade; i++) {
+        const novo = await prisma.ticket.create({
           data: {
             tipo: ticket.tipo,
-            quantidade: ticket.quantidade,
+            quantidade: 1, // cada registro representa 1 ticket
             userId: userId,
           },
-        })
-      )
-    );
+        });
+        ticketsCriados.push(novo);
+      }
+    }
 
     return NextResponse.json({ success: true, tickets: ticketsCriados });
   } catch (error) {
