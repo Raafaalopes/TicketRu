@@ -22,6 +22,10 @@ model Usuario {
   categoria String
   tickets   Ticket[]
   createdAt DateTime @default(now())
+
+  // para o reset de senha
+  resetToken       String?   @unique
+  resetTokenExpiry DateTime?
 }
 
 model Ticket {
