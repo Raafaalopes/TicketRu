@@ -72,7 +72,7 @@ export default function CardapioPage() {
       <div className="min-h-screen p-4 pt-4 md:ml-64 max-w-md mx-auto">
         <div className="flex flex-col items-center justify-center mb-4">
           <p className="text-sm text-gray-600 mt-1">
-            Válido de 17/03 a 21/03 — Segunda à sexta
+            Válido de 01/11 a 05/11 — Segunda à sexta
           </p>
           <p className="text-sm text-gray-600 mt-1">
             Das 11h às 13h e das 18h às 19h30
