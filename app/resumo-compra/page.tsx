@@ -4,7 +4,7 @@
 import { useUser } from "@/app/_context/UserContext";
 import { ChevronLeft } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { JSX, useEffect, useState } from "react";
+import { JSX, useEffect, useState, Suspense } from "react";
 import { toast } from "sonner";
 
 const precos = {
@@ -22,7 +22,7 @@ const precos = {
   },
 };
 
-export default function ResumoCompra() {
+function ResumoCompraContent() {
   const { usuario } = useUser();
   const [formaPagamento, setFormaPagamento] = useState("credito");
   const [cafeQtd, setCafeQtd] = useState(0);
@@ -136,5 +136,13 @@ export default function ResumoCompra() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function ResumoCompra() {
+  return (
+    <Suspense fallback={<p>Carregando resumo...</p>}>
+      <ResumoCompraContent />
+    </Suspense>
   );
 }

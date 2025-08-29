@@ -1,13 +1,13 @@
 // app/reset-password/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Input } from "@/app/_components/ui/input";
 import { Button } from "@/app/_components/ui/button";
 import { Label } from "@/app/_components/ui/label";
 
-export default function ResetPassword() {
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const router = useRouter();
@@ -102,5 +102,13 @@ export default function ResetPassword() {
         {status && <p className="mt-4 text-sm text-gray-700">{status}</p>}
       </div>
     </div>
+  );
+}
+
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={<p>Carregando página...</p>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }

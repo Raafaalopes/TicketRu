@@ -47,7 +47,7 @@ export default function ForgotPassword() {
   return (
     <>
       <nav className="absolute top-4 left-4 text-green-700">
-        <NavLink href="/home" icon={<ChevronLeft size={25} />} />
+        <NavLink href="/login" icon={<ChevronLeft size={25} />} />
       </nav>
       <div className="flex items-center justify-center min-h-screen bg-gray-100 ">
         <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md border-l-4 border-r-4 border-green-600">
