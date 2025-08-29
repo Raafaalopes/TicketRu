@@ -46,34 +46,8 @@ export default function ComprarPage() {
       return;
     }
 
-    try {
-      const res = await fetch("/api/tickets/comprar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: usuario.id,
-          tickets: [
-            { tipo: "cafe", quantidade: cafeQtd },
-            { tipo: "almoco", quantidade: almocoQtd },
-          ].filter((t) => t.quantidade > 0),
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        // Envia os dados como query params para a tela de resumo
-        const query = `?cafeQtd=${cafeQtd}&almocoQtd=${almocoQtd}`;
-        router.push(`/resumo-compra${query}`);
-      } else {
-        toast.error("Erro ao finalizar a compra");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Erro inesperado");
-    }
+    const query = `?cafeQtd=${cafeQtd}&almocoQtd=${almocoQtd}`;
+    router.push(`/resumo-compra${query}`);
   };
 
   return (

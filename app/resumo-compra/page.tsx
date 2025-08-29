@@ -44,11 +44,36 @@ function ResumoCompraContent() {
   const precoAlmoco = precos[categoria]?.almoco ?? 10.0;
   const total = cafeQtd * precoCafe + almocoQtd * precoAlmoco;
 
-  const finalizar = () => {
-    toast.success(
-      `Pagamento simulado com ${formaPagamento.toUpperCase()}.\nCompra finalizada!`
-    );
-    router.push("/comprar"); // redireciona para a tela de compra
+  const finalizar = async () => {
+    if (!usuario) return;
+
+    try {
+      const res = await fetch("/api/tickets/comprar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: usuario.id,
+          tickets: [
+            { tipo: "cafe", quantidade: cafeQtd },
+            { tipo: "almoco", quantidade: almocoQtd },
+          ].filter((t) => t.quantidade > 0),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success(
+          `Pagamento simulado com ${formaPagamento.toUpperCase()}.\nCompra finalizada!`
+        );
+        router.push("/comprar");
+      } else {
+        toast.error("Erro ao finalizar a compra");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Erro inesperado");
+    }
   };
 
   const NavLink = ({ href, icon }: { href: string; icon: JSX.Element }) => (
