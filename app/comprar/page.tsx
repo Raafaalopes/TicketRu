@@ -41,6 +41,11 @@ export default function ComprarPage() {
   const irParaResumo = async () => {
     if (!usuario) return;
 
+    if (almocoQtd === 0 && cafeQtd === 0) {
+      toast.error("Selecione pelo menos um ticket para continuar");
+      return;
+    }
+
     try {
       const res = await fetch("/api/tickets/comprar", {
         method: "POST",
@@ -93,7 +98,18 @@ export default function ComprarPage() {
                 >
                   –
                 </button>
-                <span className="text-base">{cafeQtd}</span>
+                <input
+                  type="text"
+                  inputMode="numeric" // força teclado numérico no celular
+                  pattern="[0-9]*" // garante que só números sejam aceitos
+                  value={cafeQtd}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, ""); // remove qualquer não-numérico
+                    setCafeQtd(val === "" ? 0 : parseInt(val));
+                  }}
+                  className="w-16 text-center border rounded-lg p-1"
+                />
+
                 <button
                   onClick={() => setCafeQtd(cafeQtd + 1)}
                   className="w-8 h-8 text-white bg-yellow-700 rounded-full flex items-center justify-center"
@@ -124,7 +140,17 @@ export default function ComprarPage() {
                 >
                   –
                 </button>
-                <span className="text-base">{almocoQtd}</span>
+                <input
+                  type="text"
+                  inputMode="numeric" // força teclado numérico no celular
+                  pattern="[0-9]*" // garante que só números sejam aceitos
+                  value={almocoQtd}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, ""); // remove qualquer não-numérico
+                    setAlmocoQtd(val === "" ? 0 : parseInt(val));
+                  }}
+                  className="w-16 text-center border rounded-lg p-1"
+                />
                 <button
                   onClick={() => setAlmocoQtd(almocoQtd + 1)}
                   className="w-8 h-8 text-white bg-green-700 rounded-full flex items-center justify-center"
