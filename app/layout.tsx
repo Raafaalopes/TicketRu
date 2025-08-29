@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "sonner";
 import { UserProvider } from "./_context/UserContext";
 
 export const metadata: Metadata = {
@@ -14,7 +15,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <UserProvider>{children}</UserProvider>
+        <UserProvider>
+          {children}
+          <Toaster richColors position="top-right" />
+        </UserProvider>
       </body>
     </html>
   );

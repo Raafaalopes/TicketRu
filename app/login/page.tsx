@@ -6,6 +6,7 @@ import { Input } from "@/app/_components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/app/_components/ui/button";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,14 +31,14 @@ export default function Login() {
 
       if (!res.ok) throw new Error(data.error || "Erro ao fazer login");
 
-      alert("Login realizado com sucesso!");
+      toast.success("Login realizado com sucesso!");
       console.log("redirecionando para o home");
       router.push("/home"); // ou dashboard
     } catch (err: unknown) {
       if (err instanceof Error) {
-        alert(err.message);
+        toast.error(err.message);
       } else {
-        alert("Ocorreu um erro desconhecido.");
+        toast.error("Ocorreu um erro desconhecido.");
       }
     }
   };
@@ -105,9 +106,6 @@ export default function Login() {
               </button>
             </div>
           </div>
-
-          {/* Erro --> no meu outro codigo tem essa parte que se nao me engano é mais relacionado com o back end
-        entao nao precisa resolver ainda */}
           {/* MANTER CONECTADO */}
           <div className="flex items-center space-x-2">
             <input

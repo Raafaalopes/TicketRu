@@ -5,6 +5,7 @@ import { useState } from "react";
 import Sidebar from "../_components/Sidebar";
 import { useRouter } from "next/navigation";
 import { useUser } from "../_context/UserContext";
+import { toast } from "sonner";
 
 export default function ComprarPage() {
   const [almocoQtd, setAlmocoQtd] = useState(0);
@@ -62,11 +63,11 @@ export default function ComprarPage() {
         const query = `?cafeQtd=${cafeQtd}&almocoQtd=${almocoQtd}`;
         router.push(`/resumo-compra${query}`);
       } else {
-        alert("Erro ao finalizar a compra");
+        toast.error("Erro ao finalizar a compra");
       }
     } catch (err) {
       console.error(err);
-      alert("Erro inesperado");
+      toast.error("Erro inesperado");
     }
   };
 

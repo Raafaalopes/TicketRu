@@ -4,6 +4,7 @@
 import { useUser } from "@/app/_context/UserContext";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const precos = {
   ESTUDANTE: {
@@ -43,7 +44,7 @@ export default function ResumoCompra() {
   const total = cafeQtd * precoCafe + almocoQtd * precoAlmoco;
 
   const finalizar = () => {
-    alert(
+    toast.success(
       `Pagamento simulado com ${formaPagamento.toUpperCase()}.\nCompra finalizada!`
     );
     router.push("/comprar"); // redireciona para a tela de compra

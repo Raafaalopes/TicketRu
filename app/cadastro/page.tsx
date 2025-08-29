@@ -6,6 +6,7 @@ import { Input } from "@/app/_components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/app/_components/ui/button";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Login() {
   const [nome, setNome] = useState("");
@@ -21,7 +22,7 @@ export default function Login() {
     e.preventDefault();
 
     if (senha !== confirmarSenha) {
-      alert("As senhas não coincidem");
+      toast.error("As senhas não coincidem");
       return;
     }
 
@@ -36,13 +37,13 @@ export default function Login() {
 
       if (!res.ok) throw new Error(data.error || "Erro ao cadastrar");
 
-      alert("Cadastro realizado com sucesso!");
+      toast.success("Cadastro realizado com sucesso!");
       router.push("/login");
     } catch (err: unknown) {
       if (err instanceof Error) {
-        alert(err.message);
+        toast.error(err.message);
       } else {
-        alert("Ocorreu um erro desconhecido.");
+        toast.error("Ocorreu um erro desconhecido.");
       }
     }
   };

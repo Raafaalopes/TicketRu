@@ -46,17 +46,19 @@ export default function ForgotPassword() {
 
   return (
     <>
-      <nav className="absolute top-4 left-4">
-        <NavLink href="/home" icon={<ChevronLeft size={20} />} />
+      <nav className="absolute top-4 left-4 text-green-700">
+        <NavLink href="/home" icon={<ChevronLeft size={25} />} />
       </nav>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 ">
+        <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md border-l-4 border-r-4 border-green-600">
           <h1 className="text-2xl font-bold mb-4 text-green-700">
             Esqueci minha senha
           </h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="email">Digite seu email</Label>
+              <Label className="text-green-700" htmlFor="email">
+                Digite seu email
+              </Label>
               <Input
                 id="email"
                 type="email"
