@@ -1,3 +1,5 @@
+protótipo de telas do aplicativo: https://www.figma.com/design/8z9QJgbcj1HDhEr6bVkuYW/Designs-do-TicketRu?t=h2ds2LPMB8eXrYnB-0
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
